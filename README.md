@@ -14,3 +14,10 @@ The RFB protocol client code is based on LibVNCServer v0.9.9, Copyright (C)
 
 Some part of code came from KRDC, Copyright (c) 2007-2008 Urs Wolfer
 
+#Features
+* Native interface Silica on Sailfish OS
+* Connect to a remote VNC Desktop Server
+* Control screen through touch screen gesture as mouse event and virtual keyboard as desktop key event
+* Touch scroll on the screen for big resolution display
+
+
