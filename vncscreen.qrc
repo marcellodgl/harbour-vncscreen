@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/VncScreen">
+        <file>icons/86x86/harbour-vncscreen.png</file>
+        <file>icons/gplv3.png</file>
+        <file>icons/paypal.png</file>
+        <file>icons/git.png</file>
+    </qresource>
+</RCC>
