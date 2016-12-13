@@ -1,2 +1,0 @@
-Avviamento di git:
-/usr/bin/git init 
