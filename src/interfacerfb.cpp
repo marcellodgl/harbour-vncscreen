@@ -80,6 +80,23 @@ QString InterfaceRFB::vncpassword()
     return urlPassword;
 }
 
+void InterfaceRFB::setVncquality(int quality)
+{
+    qDebug()<<"quality"<<quality;
+    if(quality==1) vncThread->setQuality(VncClientThread::Low);
+    else if(quality==2) vncThread->setQuality(VncClientThread::Medium);
+    else if(quality==3) vncThread->setQuality(VncClientThread::High);
+    else vncThread->setQuality(VncClientThread::Unknown);
+}
+
+int InterfaceRFB::vncquality()
+{
+    if(vncThread->quality()==VncClientThread::Low) return 1;
+    else if(vncThread->quality()==VncClientThread::Medium) return 2;
+    else if(vncThread->quality()==VncClientThread::High) return 3;
+    else return 0;
+}
+
 void InterfaceRFB::vncDisconnect()
 {
     if(vncThread)

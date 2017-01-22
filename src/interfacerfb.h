@@ -37,6 +37,8 @@ class InterfaceRFB : public QObject
 //    Q_PROPERTY(QString testo READ testo NOTIFY testoChanged)
     Q_PROPERTY(QString vncpath READ vncpath WRITE setVncpath NOTIFY vncpathChanged)
     Q_PROPERTY(QString vncpassword READ vncpassword WRITE setVncpassword NOTIFY vncpasswordChanged)
+    Q_PROPERTY(int vncquality READ vncquality WRITE setVncquality NOTIFY vncqualityChanged)
+
 //    Q_PROPERTY(QString percorso READ percorso NOTIFY percorsoChanged)
 
 public:
@@ -47,6 +49,8 @@ public:
     QString vncpath();
     void setVncpassword(QString password);
     QString vncpassword();
+    void setVncquality(int quality);
+    int vncquality();
     enum Status
     {
         Connected=1,
@@ -59,6 +63,7 @@ private:
     VncClientThread *vncThread;
     QUrl urlPath;
     QString urlPassword;
+    int quality;
     long vncIndex;
     QList<int> keyEventAccepted;
 
@@ -68,6 +73,7 @@ signals:
     void vncpathChanged();
     void passwordRequest();
     void vncpasswordChanged();
+    void vncqualityChanged();
     void vncStatus(int status);
     void vncImageUpdate(long index);
 public slots:

@@ -100,13 +100,24 @@ public:
     void setUrlPath(QUrl urlPath);
 
     void setListenPort(int port) { listen_port = port; }
-//    void setQuality(RemoteView::Quality quality);
+
+    Q_ENUMS(Quality)
+    enum Quality {
+        Unknown,
+        High,
+        Medium,
+        Low
+    };
+
+    void setQuality(VncClientThread::Quality quality);
     void setPassword(const QString &password);
 
     const QString password() const { return m_password; }
 
-//    RemoteView::Quality quality() const;
+    VncClientThread::Quality quality() const;
     uint8_t *frameBuffer;
+
+
 
 signals:
 
@@ -140,8 +151,8 @@ private:
     QString m_password;
     int m_port, listen_port;
     QMutex mutex;
-//    RemoteView::Quality m_quality;
-    int m_quality;
+    VncClientThread::Quality m_quality;
+
     QQueue<ClientEvent* > m_eventQueue;
 
     volatile bool m_stopped;

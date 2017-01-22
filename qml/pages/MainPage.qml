@@ -86,6 +86,7 @@ Page {
             id : dialog
             onAccepted:{
                 screenInterface.vncpath=connectionUrl
+                screenInterface.vncquality=screenQuality
             }
         }
     }

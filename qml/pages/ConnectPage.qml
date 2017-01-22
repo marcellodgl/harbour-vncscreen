@@ -23,17 +23,37 @@ import Sailfish.Silica 1.0
 
 Dialog {
     property string connectionUrl: urlField.text
+    property string screenQuality: qualitySlider.value
     DialogHeader{
         id: header
         title: "Connect"
     }
     TextField{
         id: urlField
-        placeholderText: "VNC Server URL"
+        placeholderText: qsTr("VNC Server URL")
         anchors.top: header.bottom
-        label: "URL"
+        label: qsTr("Url")
         width: parent.width
         EnterKey.onClicked: accept()
+    }
+    Slider {
+        id: qualitySlider
+        anchors.top:urlField.bottom
+        width: parent.width
+        anchors.horizontalCenter: parent.horizontalCenter
+        value: 0
+        label:qsTr("Quality")
+        minimumValue: 1
+        maximumValue: 3
+        stepSize: 1
+
+        function sliderLabel(){
+            if(value==1) return "Low (ISDN)"
+            else if(value==2) return "Medium (DSL)"
+            else if(value==3) return "High (LAN)"
+            else return ""
+        }
+        valueText: sliderLabel()
     }
 }
 

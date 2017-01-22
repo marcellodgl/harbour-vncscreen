@@ -29,37 +29,41 @@
 static QString outputErrorMessageString;
 
 
-
+#define MAX_COLOR_DEPTH 32
 
 rfbBool VncClientThread::newclient(rfbClient *cl)
 {
-    qDebug()<<"newclient";
+
     VncClientThread *t = (VncClientThread*)rfbClientGetClientData(cl, 0);
+    qDebug()<<"newclient quality()"<<t->quality();
     Q_ASSERT(t);
-//    switch (t->quality()) {
-//    case RemoteView::High:
-//        cl->format.bitsPerPixel = MAX_COLOR_DEPTH;
-//        cl->appData.useBGR233 = 0;
-//        cl->appData.encodingsString = "copyrect hextile raw";
-//        cl->appData.compressLevel = 0;
-//        cl->appData.qualityLevel = 9;
-//        break;
-//    case RemoteView::Medium:
+
+    switch (t->quality())
+    {
+    case VncClientThread::High:
+        cl->format.bitsPerPixel = MAX_COLOR_DEPTH;
+        cl->appData.useBGR233 = 0;
+        cl->appData.encodingsString = "copyrect hextile raw";
+        cl->appData.compressLevel = 0;
+        cl->appData.qualityLevel = 9;
+        break;
+    case VncClientThread::Medium:
         cl->format.bitsPerPixel = 16;
         cl->appData.useBGR233 = 0;
         cl->appData.encodingsString = "tight zrle ultra copyrect hextile zlib corre rre raw";
         cl->appData.compressLevel = 5;
         cl->appData.qualityLevel = 7;
-//        break;
-//    case RemoteView::Low:
-//    case RemoteView::Unknown:
-//    default:
-//        cl->format.bitsPerPixel = 16; //TODO: add support for 8bit (needs color map)
-//        cl->appData.encodingsString = "tight zrle ultra copyrect hextile zlib corre rre raw";
-//        cl->appData.compressLevel = 9;
-//        cl->appData.qualityLevel = 1;
-//    }
+        break;
+    case VncClientThread::Low:
+    case VncClientThread::Unknown:
+    default:
 
+        cl->format.bitsPerPixel = 16; //TODO: add support for 8bit (needs color map)
+        cl->appData.encodingsString = "tight zrle ultra copyrect hextile zlib corre rre raw";
+        cl->appData.compressLevel = 9;
+        cl->appData.qualityLevel = 1;
+    }
+    qDebug()<<"bitperpixel"<<cl->format.bitsPerPixel<<"encodingString"<<cl->appData.encodingsString<<"compresslevel"<<cl->appData.compressLevel<<"qualitylevel"<<cl->appData.qualityLevel;
     if(cl->format.bitsPerPixel == 16) {
         cl->format.depth = 16; //number of useful bits in the pixel value
         cl->format.redShift = 11;
@@ -229,15 +233,15 @@ void VncClientThread::setUrlPath(const QUrl urlPath)
 
 
 
-//void VncClientThread::setQuality(RemoteView::Quality quality)
-//{
-//    m_quality = quality;
-//}
+void VncClientThread::setQuality(VncClientThread::Quality quality)
+{
+    m_quality = quality;
+}
 
-//RemoteView::Quality VncClientThread::quality() const
-//{
-//    return m_quality;
-//}
+VncClientThread::Quality VncClientThread::quality() const
+{
+    return m_quality;
+}
 
 void VncClientThread::setImage(const QImage &img)
 {
@@ -292,11 +296,10 @@ void VncClientThread::run()
     m_password=QString();
     int passwd_failures = 0;
     while (!m_stopped)
-    { // try to connect as long as the server allows
-
+    {
+        // try to connect as long as the server allows
         m_passwordError = false;
         outputErrorMessageString.clear(); //don't deliver error messages of old instances...
-        qDebug()<<"metodi";
         rfbClientLog = outputHandler;
         rfbClientErr = outputHandler;
         cl = rfbGetClient(8, 3, 4); // bitsPerSample, samplesPerPixel, bytesPerPixel
@@ -305,10 +308,8 @@ void VncClientThread::run()
         cl->GetPassword = passwdHandler;
         cl->GotFrameBufferUpdate = updatefb;
         cl->GotXCutText = cuttext;
-        qDebug()<<"setclientdata";
 
         rfbClientSetClientData(cl, 0, this);
-
 
         cl->serverHost = strdup(m_host.toUtf8().constData());
 
