@@ -127,7 +127,8 @@ SOURCES += src/harbour-vncscreen.cpp \
     src/libvncclient/vncviewer.c \
     src/libvncclient/zlib.c \
     src/libvncclient/zrle.c \
-    src/sym2rfbkey.cpp
+    src/sym2rfbkey.cpp \
+    src/interfacesettings.cpp
 
 OTHER_FILES += qml/harbour-vncscreen.qml \
     qml/cover/CoverPage.qml \
@@ -204,7 +205,8 @@ HEADERS += \
     src/interfacerfb.h \
     src/screenprovider.h \
     src/vncclientthread.h \
-    src/sym2rfbkey.h
+    src/sym2rfbkey.h \
+    src/interfacesettings.h
 
 RESOURCES += \
     vncscreen.qrc

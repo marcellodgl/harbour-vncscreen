@@ -28,6 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QQuickView>
 #include <QGuiApplication>
 #include "interfacerfb.h"
+#include "interfacesettings.h"
 #include "screenprovider.h"
 //#include "vncclientthread.h"
 
@@ -41,6 +42,7 @@ int main(int argc, char *argv[])
     QScopedPointer<QQuickView> v(SailfishApp::createView());
 
     qmlRegisterType<InterfaceRFB>("harbour.vncscreen.InterfaceRFB", 1, 0, "InterfaceRFB");
+    qmlRegisterType<InterfaceSettings>("harbour.vncscreen.InterfaceSettings", 1, 0, "InterfaceSettings");
     QQmlEngine *engine=v->engine();
     ScreenProvider *screenProvider= new ScreenProvider(QQmlImageProviderBase::Image);
     engine->addImageProvider(QLatin1String("rfbimage"),screenProvider);

@@ -36,15 +36,9 @@ InterfaceRFB::InterfaceRFB(QObject *parent) : QObject(parent)
     keyEventAccepted<<Qt::Key_Control<<Qt::Key_Alt<<Qt::Key_Shift<<Qt::Key_Return<<Qt::Key_Backspace;
 }
 
-QImage InterfaceRFB::screen()
-{
-    return rfbImage;
-}
 
-QString InterfaceRFB::testo()
-{
-    return rfbTesto;
-}
+
+
 
 void InterfaceRFB::setVncpath(QString path)
 {
@@ -79,6 +73,8 @@ QString InterfaceRFB::vncpassword()
 {
     return urlPassword;
 }
+
+
 
 void InterfaceRFB::setVncquality(int quality)
 {

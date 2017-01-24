@@ -256,6 +256,7 @@ Page {
                     {
                         console.log("screenInterface.vnckey "+text.charAt(text.length-1))
                         screenInterface.vncKey(text.charAt(text.length-1))
+
                     }
 
 

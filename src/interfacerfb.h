@@ -33,22 +33,19 @@ class InterfaceRFB : public QObject
 {
     Q_OBJECT
     Q_ENUMS(Status)
-    Q_PROPERTY(QImage screen READ screen NOTIFY screenChanged)
-//    Q_PROPERTY(QString testo READ testo NOTIFY testoChanged)
     Q_PROPERTY(QString vncpath READ vncpath WRITE setVncpath NOTIFY vncpathChanged)
     Q_PROPERTY(QString vncpassword READ vncpassword WRITE setVncpassword NOTIFY vncpasswordChanged)
     Q_PROPERTY(int vncquality READ vncquality WRITE setVncquality NOTIFY vncqualityChanged)
 
-//    Q_PROPERTY(QString percorso READ percorso NOTIFY percorsoChanged)
 
 public:
     explicit InterfaceRFB(QObject *parent = 0);
-    QImage screen();
-    QString testo();
+
     void setVncpath(QString path);
     QString vncpath();
     void setVncpassword(QString password);
     QString vncpassword();
+
     void setVncquality(int quality);
     int vncquality();
     enum Status
@@ -68,7 +65,7 @@ private:
     QList<int> keyEventAccepted;
 
 signals:
-    void screenChanged();
+
 //    void testoChanged();
     void vncpathChanged();
     void passwordRequest();
@@ -77,6 +74,7 @@ signals:
     void vncStatus(int status);
     void vncImageUpdate(long index);
 public slots:
+    //Gli slot sono direttamente richiamabili, altrimenti andrebbe usata la macro Q_INVOKABLE
     void vncDisconnect();
     void timerTimeout();
 //    void vncMousePositionChanged(int x,int y,int button);
@@ -91,6 +89,7 @@ private slots:
     void onConnected();
     void onDisconnected();
     void onImageUpdate(int x, int y, int w, int h);
+
 };
 
 #endif // INTERFACERFB_H
