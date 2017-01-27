@@ -159,7 +159,13 @@ DISTFILES += \
     qml/components/BlockText.qml \
     LICENSE \
     README.md \
-    COPYING
+    COPYING \
+    harbour/Screenshot/keyboard.png \
+    harbour/Screenshot/login.png \
+    harbour/Screenshot/loginhistory.png \
+    harbour/Screenshot/screen.png \
+    harbour/Screenshot/zoom.png \
+    harbour/description.txt
 
 HEADERS += \
     src/libvncclient/common/d3des.h \

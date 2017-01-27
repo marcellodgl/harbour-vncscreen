@@ -1,0 +1,3 @@
+Remote Desktop application for Sailfish OS based on VNC standard.
+You can use it to connect to a VNC Desktop Server for visualize and operate on a Remote screen.
+Provided control trough touch screen gestures  and virtual keyboard keys.
