@@ -63,6 +63,8 @@ private:
     int quality;
     long vncIndex;
     QList<int> keyEventAccepted;
+    int resolutionWidth;
+    int resolutionHeight;
 
 signals:
 
@@ -73,6 +75,7 @@ signals:
     void vncqualityChanged();
     void vncStatus(int status);
     void vncImageUpdate(long index);
+    void resolutionChanged(int width,int height);
 public slots:
     //Gli slot sono direttamente richiamabili, altrimenti andrebbe usata la macro Q_INVOKABLE
     void vncDisconnect();

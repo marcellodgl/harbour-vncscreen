@@ -26,39 +26,12 @@ import harbour.vncscreen.InterfaceRFB 1.0
 Page {
     id: page
     allowedOrientations: Orientation.All
-    Component{
-        id:passwordDialog
-        PasswordPage{
-
-            id : dialog
-            onAccepted:{
-                console.log(connectionPassword);
-                screenInterface.vncpassword=connectionPassword
-            }
-        }//        model: 20
-        //        anchors.fill: parent
-        //        header: PageHeader {
-        //            title: qsTr("Nested Page")
-        //        }
-        //        delegate: BackgroundItem {
-        //            id: delegate
-
-        //            Label {
-        //                x: Theme.paddingLarge
-        //                text: qsTr("Item") + " " + index
-        //                anchors.verticalCenter: parent.verticalCenter
-        //                color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
-        //            }
-        //            onClicked: console.log("Clicked " + index)
-        //        }
-        //        VerticalScrollDecorator {}
-    }
 
     InterfaceRFB{
         id: screenInterface
         onPasswordRequest: {
             console.log("interfaceRFBPassword request")
-            pageStack.push(passwordDialog)
+            pageStack.push(passwordComponent)
 
         }
         onVncStatus: {
@@ -74,58 +47,41 @@ Page {
             imageScreen.source="image://rfbimage/horizontal"+index
             console.log("image update complete"+index)
         }
-
+        onResolutionChanged: {
+            flickableScreen.contentWidth=width
+            flickableScreen.contentHeight=height
+            screenPinch.currentScale=1
+        }
 
     }
 
-
-
+//L'utilizzo del component con innestato il dialog ha il ruolo di rendere il dialog come oggetto temporaneo che viene distrutto a fine utilizzo
+//in caso contrario si tratterebbe di un dialog che resta allocato e sarebbe sempre lo stesso nei successivi utilizzi
     Component{
-        id:connectDialog
+        id:connectComponent
         ConnectPage{
-            id : dialog
+            id : connectDialog
             onAccepted:{
                 screenInterface.vncpath=connectionUrl
                 screenInterface.vncquality=screenQuality
             }
         }
     }
-
+    Component{
+        id:passwordComponent
+        PasswordPage{
+            id : passwordDialog
+            onAccepted:{
+                console.log(connectionPassword);
+                screenInterface.vncpassword=connectionPassword
+            }
+        }
+    }
 
 
     SilicaFlickable {
         anchors.fill: parent
         id: flickableScreen
-        property int visibleAreaX: 0
-        property int visibleAreaY: 0
-        onMovementEnded:  {
-            console.log("flick x"+visibleArea.xPosition+"image x"+imageScreen.x)
-            keyboardText.x=contentX
-            keyboardText.y=contentY
-
-            visibleAreaX=visibleArea.xPosition*imageScreen.width
-            visibleAreaY=visibleArea.yPosition*imageScreen.height
-        }
-
-
-
-        contentHeight: column.height
-        contentWidth: imageScreen.width
-        VerticalScrollDecorator{
-            flickable: imageScreen
-        }
-        HorizontalScrollDecorator{
-            flickable: imageScreen
-        }
-
-        Timer{
-            id:focusTimer
-            interval: 250
-            onTriggered: {
-                flickableScreen.contentX=flickableScreen.visibleAreaX
-                flickableScreen.contentY=flickableScreen.visibleAreaY
-            }
-        }
 
         PullDownMenu {
             MenuItem {
@@ -140,7 +96,7 @@ Page {
                 text: qsTr("Connect")
                 visible: true
                 onClicked:{
-                    pageStack.push(connectDialog)
+                    pageStack.push(connectComponent)
                 }
             }
             MenuItem {
@@ -152,6 +108,7 @@ Page {
                 }
             }
         }
+
         PushUpMenu{
             MenuLabel{
                 id:toolButtonMenu
@@ -160,8 +117,7 @@ Page {
                     icon.source: "image://theme/icon-m-keyboard"
                     onClicked: {
                         console.log("keyboard")
-                            keyboardText.forceActiveFocus()
-
+                        keyboardText.forceActiveFocus()
                     }
                 }
                 IconButton {
@@ -173,104 +129,145 @@ Page {
                     }
                 }
             }
+        }
+        onMovementEnded:   {
+            //            console.log("flick x"+visibleArea.xPosition+"image x"+imageScreen.x)
+            keyboardText.x=contentX
+            keyboardText.y=contentY
+        }
+        VerticalScrollDecorator{
+
+        }
+        HorizontalScrollDecorator{
 
         }
 
+//        contentWidth: 1280 ;contentHeight: 800
 
         Column {
             id: column
-
             width: page.width
+
             spacing: Theme.paddingLarge
+
             PageHeader {
                 id:screenHeader
                 title: qsTr("VNC Screen")
             }
 
 
-            Image {
-                id: imageScreen
+            PinchArea {
+                property real initialWidth
+                property real initialHeight
+                property real currentScale: 1
+                id:screenPinch
+                width: Math.max(flickableScreen.contentWidth, flickableScreen.width)
+                height: Math.max(flickableScreen.contentHeight, flickableScreen.height)
 
-                fillMode: Image.TileVertically
+                Image {
+                    id:imageScreen
+
+                    width: flickableScreen.contentWidth
+                    height: flickableScreen.contentHeight
+
+//                    source: "qrc:/VncScreen/icons/schermata.png"
+
+                }
+
+
                 MouseArea{
                     id:mouseControl
-                    anchors.fill: parent
+
+                    anchors.fill: imageScreen
                     onPositionChanged: {
                         console.log("movement")
-                        console.log(mouse.x)
-                        console.log(mouse.y)
-                        screenInterface.vncMouseEvent(mouse.x,mouse.y,mouse.buttons)
+                        console.log("mouse.x"+mouse.x+"mouse.y"+mouse.y+"currentScale"+screenPinch.currentScale)
+
+                        screenInterface.vncMouseEvent(mouse.x/screenPinch.currentScale,mouse.y/screenPinch.currentScale,mouse.buttons)
                     }
                     onPressed:  {
                         console.log("pressed")
-                        screenInterface.vncMouseEvent(mouse.x,mouse.y,mouse.buttons)
+                        console.log("mouse.x"+mouse.x+"mouse.y"+mouse.y+"currentScale"+screenPinch.currentScale)
+                        screenInterface.vncMouseEvent(mouse.x/screenPinch.currentScale,mouse.y/screenPinch.currentScale,mouse.buttons)
                     }
                     onReleased: {
                         console.log("released")
-                        screenInterface.vncMouseEvent(mouse.x,mouse.y,mouse.buttons)
+                        console.log("mouse.x"+mouse.x+"mouse.y"+mouse.y+"currentScale"+screenPinch.currentScale)
+                        screenInterface.vncMouseEvent(mouse.x/screenPinch.currentScale,mouse.y/screenPinch.currentScale,mouse.buttons)
                     }
 
                 }
 
+                onPinchStarted: {
+                    console.log("pinchstarted pinchscale"+pinch.scale+"currentscale"+screenPinch.currentScale)
+                    initialWidth = imageScreen.width
+                    initialHeight = imageScreen.height
 
-
-            }
-            TextField{
-                id:keyboardText
-                visible: false
-
-                property int indexKey: 0
-                property int textSize:  0
-                property  int keyCode: 0
-//Importante per non far comparire shift automatici e dover applicare tecniche che possan generare confusione
-//Evita anche che vengano utilizzati degli anticipatori di testo che in tal caso sono fuorvianti perchè i caratteri
-//vanno passati al vnc
-                echoMode: TextInput.NoEcho
-
-//                text:"A"
-//                focus: true
-
-
-                Keys.onPressed: {
-                    console.log(event.text)
-                    screenInterface.vncKeyEvent(event.key,event.modifiers,true)
                 }
-                Keys.onReleased: {
-                    console.log(event.text)
-//Condizione di if perchè il backspace genera solo evento di rilased senza pressed
-                    if(event.key === Qt.Key_Backspace)
-                    {
+
+                onPinchUpdated: {
+                    console.log("onPinchUpdated prev center"+pinch.previousCenter.x +"center"+ pinch.center.x+"scale"+pinch.scale)
+                    // ref http://doc.qt.io/qt-5/qtquick-touchinteraction-pincharea-flickresize-qml.html
+                    //non viene impostato il contentX e contentY perchè altrimenti al resize viene spostata la posizione del riquadro
+                    flickableScreen.resizeContent(initialWidth * pinch.scale, initialHeight * pinch.scale, pinch.center)
+
+                }
+
+                onPinchFinished: {
+                    console.log("onPinchFinished")
+                   screenPinch.currentScale=screenPinch.currentScale*pinch.scale
+
+                    // Move its content within bounds.
+                    //                flickableScreen.returnToBounds()
+                }
+
+                TextField{
+                    id:keyboardText
+                    visible: false
+
+                    property int indexKey: 0
+                    property int textSize:  0
+                    property  int keyCode: 0
+    //Importante per non far comparire shift automatici e dover applicare tecniche che possan generare confusione
+    //Evita anche che vengano utilizzati degli anticipatori di testo che in tal caso sono fuorvianti perchè i caratteri
+    //vanno passati al vnc
+                    echoMode: TextInput.NoEcho
+
+
+                    Keys.onPressed: {
+                        console.log(event.text)
                         screenInterface.vncKeyEvent(event.key,event.modifiers,true)
                     }
+                    Keys.onReleased: {
+                        console.log(event.text)
+    //Condizione di if perchè il backspace genera solo evento di rilased senza pressed
+                        if(event.key === Qt.Key_Backspace)
+                        {
+                            screenInterface.vncKeyEvent(event.key,event.modifiers,true)
+                        }
 
-                    screenInterface.vncKeyEvent(event.key,event.modifiers,false)
+                        screenInterface.vncKeyEvent(event.key,event.modifiers,false)
 
-//                    text="A"
-                }
-                onTextChanged: {
-
-                    keyCode=text.charCodeAt(text.length-1)
-                    console.log(text.charAt(text.length-1))
-                    console.log("text "+keyboardText.text+" char "+text.charAt(text.length-1)+" CHARCODE "+keyCode+" textlength"+text.length+"textsize"+textSize+"extremous"+Qt.Key_A+" "+Qt.Key_Z)
-                    if(text.length>textSize)
-                    {
-                        console.log("screenInterface.vnckey "+text.charAt(text.length-1))
-                        screenInterface.vncKey(text.charAt(text.length-1))
-
+    //                    text="A"
                     }
+                    onTextChanged: {
 
+                        keyCode=text.charCodeAt(text.length-1)
+                        console.log(text.charAt(text.length-1))
+                        console.log("text "+keyboardText.text+" char "+text.charAt(text.length-1)+" CHARCODE "+keyCode+" textlength"+text.length+"textsize"+textSize+"extremous"+Qt.Key_A+" "+Qt.Key_Z)
+                        if(text.length>textSize)
+                        {
+                            console.log("screenInterface.vnckey "+text.charAt(text.length-1))
+                            screenInterface.vncKey(text.charAt(text.length-1))
 
-                    textSize=text.length
-
-
-
+                        }
+                        textSize=text.length
+                    }
                 }
             }
-
         }
-
     }
-
 }
+
 
 

@@ -19,5 +19,8 @@ Some part of code came from KRDC, Copyright (c) 2007-2008 Urs Wolfer
 * Connect to a remote VNC Desktop Server
 * Control screen through touch screen gesture as mouse event and virtual keyboard as desktop key event
 * Touch scroll on the screen for big resolution display
+* Network quality level setting
+* Connection history
+* Zoom screen through Pinch gesture
 
 

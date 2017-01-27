@@ -40,7 +40,6 @@ int main(int argc, char *argv[])
     application->setOrganizationName("Marcello Di Guglielmo");
     QScopedPointer<QGuiApplication> app(application);
     QScopedPointer<QQuickView> v(SailfishApp::createView());
-
     qmlRegisterType<InterfaceRFB>("harbour.vncscreen.InterfaceRFB", 1, 0, "InterfaceRFB");
     qmlRegisterType<InterfaceSettings>("harbour.vncscreen.InterfaceSettings", 1, 0, "InterfaceSettings");
     QQmlEngine *engine=v->engine();

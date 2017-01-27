@@ -26,7 +26,8 @@ InterfaceRFB::InterfaceRFB(QObject *parent) : QObject(parent)
     timer=new QTimer();
     connect(timer,SIGNAL(timeout()),this,SLOT(timerTimeout()));
     timer->setInterval(1000);
-
+    resolutionHeight=0;
+    resolutionWidth=0;
     vncThread=new VncClientThread(0,0);
     vncIndex=0;
     connect(vncThread,SIGNAL(passwordRequest()),this,SIGNAL(passwordRequest()));
@@ -160,6 +161,13 @@ void InterfaceRFB::onDisconnected()
 void InterfaceRFB::onImageUpdate(int x, int y, int w, int h)
 {
     QImage image=vncThread->image(0 , 0 , 0 ,  0);
+    qDebug()<<"resolution"<<image.height()<<"-"<<image.width();
+    if(image.height()!=resolutionHeight || image.width()!=resolutionWidth)
+    {
+        resolutionHeight=image.height();
+        resolutionWidth=image.width();
+        emit resolutionChanged(resolutionWidth,resolutionHeight);
+    }
     ScreenProvider::setScreenImage(image);
 //    qDebug()<<"getimage x"<<x<<" y "<<y<<" w "<<w<<" h "<<h;
     emit vncImageUpdate(vncIndex);

@@ -50,11 +50,6 @@ Dialog {
             historyModel.append({"connectionUrl":historyList[i]})
         }
 
-////        var prova = connectDialog.readModelList()
-//        connectDialog.readModelList()
-//        console.log(connectDialog.historyList)
-//        settingsConfiguration.setValue("ciao",historyList)
-
     }
 
 
@@ -166,7 +161,6 @@ Dialog {
                 }
             }
         }
-        //        anchors.fill: parent
 
         PushUpMenu{
             MenuItem{
