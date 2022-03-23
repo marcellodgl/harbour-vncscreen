@@ -38,7 +38,7 @@ InterfaceRFB::InterfaceRFB(QObject *parent) : QObject(parent)
     connect(vncThread,SIGNAL(disconnected()),this,SLOT(onDisconnected()));
     connect(vncThread,SIGNAL(imageUpdated(int,int,int,int)),this,SLOT(onImageUpdate(int,int,int,int)));
     keyEventAccepted<<Qt::Key_Control<<Qt::Key_Alt<<Qt::Key_Shift<<Qt::Key_Return<<Qt::Key_Backspace;
-//    timer->start();
+
 }
 
 
