@@ -25,16 +25,20 @@ InterfaceRFB::InterfaceRFB(QObject *parent) : QObject(parent)
 
     timer=new QTimer();
     connect(timer,SIGNAL(timeout()),this,SLOT(timerTimeout()));
-    timer->setInterval(1000);
+    timer->setSingleShot(true);
+    timer->setInterval(20);
+//    qDebug()<<"timer singleshot "<<timer->isSingleShot();
     resolutionHeight=0;
     resolutionWidth=0;
     vncThread=new VncClientThread(0,0);
     vncIndex=0;
+    m_connectionStatus=Disconnected;
     connect(vncThread,SIGNAL(passwordRequest()),this,SIGNAL(passwordRequest()));
     connect(vncThread,SIGNAL(connected()),this,SLOT(onConnected()));
     connect(vncThread,SIGNAL(disconnected()),this,SLOT(onDisconnected()));
     connect(vncThread,SIGNAL(imageUpdated(int,int,int,int)),this,SLOT(onImageUpdate(int,int,int,int)));
     keyEventAccepted<<Qt::Key_Control<<Qt::Key_Alt<<Qt::Key_Shift<<Qt::Key_Return<<Qt::Key_Backspace;
+//    timer->start();
 }
 
 
@@ -104,6 +108,20 @@ void InterfaceRFB::vncDisconnect()
 
 void InterfaceRFB::timerTimeout()
 {
+    qDebug()<<"InterfaceRFB timeout";
+    QImage image=vncThread->image(0 , 0 , 0 ,  0);
+//    qDebug()<<"resolution"<<image.height()<<"-"<<image.width();
+    if(image.height()!=resolutionHeight || image.width()!=resolutionWidth)
+    {
+        resolutionHeight=image.height();
+        resolutionWidth=image.width();
+        emit resolutionChanged(resolutionWidth,resolutionHeight);
+    }
+
+    ScreenProvider::setScreenImage(image);
+//        qDebug()<<"getimage x"<<x<<" y "<<y<<" w "<<w<<" h "<<h;
+    qDebug()<<"vncIndex"<<vncIndex<<" module "<<vncIndex%4;
+    emit vncImageUpdate(vncIndex);
 
 }
 
@@ -150,27 +168,61 @@ void InterfaceRFB::vncKey(QString key)
 void InterfaceRFB::onConnected()
 {
     qDebug()<<"on connected";
+    m_connectionStatus=Connected;
     emit vncStatus(Connected);
 }
 
 void InterfaceRFB::onDisconnected()
 {
+    m_connectionStatus=Disconnected;
     emit vncStatus(Disconnected);
 }
 
 void InterfaceRFB::onImageUpdate(int x, int y, int w, int h)
 {
-    QImage image=vncThread->image(0 , 0 , 0 ,  0);
-    qDebug()<<"resolution"<<image.height()<<"-"<<image.width();
-    if(image.height()!=resolutionHeight || image.width()!=resolutionWidth)
+//    if(!m_running)
+//    {
+//        return;
+//    }
+    qDebug()<<"timer is active "<<timer->isActive()<<" remaining time "<<timer->remainingTime();
+
+    //    if((vncIndex%4)==0)
+    //Tecnica per commisurare il framerate basato su timer impostato in alternativa si può filtrare di accettare solo alcuni frame
+    //Se si mandano troppi frame, questi non vengono renderizzati ma solo elaborati sovraccaricando la cpu.
+    //Al momento scelto di fissare il timer a 100ms
+    if(!(timer->isActive())||(timer->remainingTime()==0))
     {
-        resolutionHeight=image.height();
-        resolutionWidth=image.width();
-        emit resolutionChanged(resolutionWidth,resolutionHeight);
+        timer->start();
     }
-    ScreenProvider::setScreenImage(image);
-//    qDebug()<<"getimage x"<<x<<" y "<<y<<" w "<<w<<" h "<<h;
-    emit vncImageUpdate(vncIndex);
     vncIndex++;
+
 }
 
+void InterfaceRFB::setRunning(bool running)
+{
+    if (m_running == running)
+        return;
+
+    m_running = running;
+    if(running){
+        timer->setInterval(20);
+    }
+    else
+    {
+        timer->setInterval(5000);
+        if(m_connectionStatus==Connected)
+        {
+            timer->start();
+        }
+    }
+    emit runningChanged(running);
+}
+bool InterfaceRFB::running()
+{
+    return m_running;
+}
+
+InterfaceRFB::Status InterfaceRFB::connectionStatus()
+{
+    return m_connectionStatus;
+}

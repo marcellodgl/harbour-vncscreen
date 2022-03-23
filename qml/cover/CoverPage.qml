@@ -21,21 +21,42 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 CoverBackground {
-    Label {
-        id: label
+    property string iconSource
+    Column {
+        spacing: Theme.paddingLarge
+        width: parent.width
         anchors.centerIn: parent
-        text: qsTr("VNC Screen")
-    }
+        Label {
+            id: label
+//            anchors.centerIn: parent
 
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: qsTr("VNC Screen")
+        }
+        Image{
+            id: placeHolder
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            source:iconSource //"image://rfbimage/horizontal"+10
+            width: parent.width*0.9
+            fillMode: Image.PreserveAspectFit
+
+        }
+
+    }
     CoverActionList {
         id: coverAction
 
-        CoverAction {
-            iconSource: "image://theme/icon-cover-refresh"
-        }
-
-
+//        CoverAction {
+//            iconSource: "image://theme/icon-cover-refresh"
+//        }
     }
+    function updatePreview(){
+        console.log("vncPreviewUpdate")
+//        placeHolder.icon.source=iconSource //"image://rfbimage/horizontal"+10
+    }
+
+    onIconSourceChanged: console.log("iconSource "+iconSource)
 }
 
 

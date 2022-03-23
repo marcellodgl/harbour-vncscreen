@@ -4,6 +4,5 @@
         <file>icons/gplv3.png</file>
         <file>icons/paypal.png</file>
         <file>icons/git.png</file>
-        <file>icons/schermata.png</file>
     </qresource>
 </RCC>

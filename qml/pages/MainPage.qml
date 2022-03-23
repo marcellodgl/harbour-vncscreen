@@ -24,7 +24,9 @@ import harbour.vncscreen.InterfaceRFB 1.0
 
 
 Page {
-    id: page
+    id: root
+    signal vncPreviewUpdate(string source)
+    property bool mouseActive: false
     allowedOrientations: Orientation.All
 
     InterfaceRFB{
@@ -43,16 +45,20 @@ Page {
             status==InterfaceRFB.Disconnected ? keyboardButton.visible=false : {}
         }
         onVncImageUpdate: {
-            console.log("image update"+index)
-            imageScreen.source="image://rfbimage/horizontal"+index
+//            console.log("image update"+index)
+            running ? imageScreen.source="image://rfbimage/horizontal"+index : vncPreviewUpdate("image://rfbimage/horizontal"+index)
             console.log("image update complete"+index)
+
+
         }
         onResolutionChanged: {
+            console.log("Resolution changed "+width+"x"+height)
             flickableScreen.contentWidth=width
-            flickableScreen.contentHeight=height
+            flickableScreen.contentHeight=height+dockTools.height+screenHeader.height
             screenPinch.currentScale=1
         }
-
+        //viene fermato il refresh dello screen quando l'applicazione viene messa in background
+        running: Qt.application.state === Qt.ApplicationActive
     }
 
 //L'utilizzo del component con innestato il dialog ha il ruolo di rendere il dialog come oggetto temporaneo che viene distrutto a fine utilizzo
@@ -82,7 +88,6 @@ Page {
     SilicaFlickable {
         anchors.fill: parent
         id: flickableScreen
-
         PullDownMenu {
             MenuItem {
                 id:actionAbout
@@ -109,27 +114,7 @@ Page {
             }
         }
 
-        PushUpMenu{
-            MenuLabel{
-                id:toolButtonMenu
-                IconButton {
-                    id: keyboardButton
-                    icon.source: "image://theme/icon-m-keyboard"
-                    onClicked: {
-                        console.log("keyboard")
-                        keyboardText.forceActiveFocus()
-                    }
-                }
-                IconButton {
-                    id: mouseButton
-                    anchors.left: keyboardButton.right
-                    icon.source: "image://theme/icon-m-mouse"
-                    onClicked: {
-                        console.log("mouse")
-                    }
-                }
-            }
-        }
+
         onMovementEnded:   {
             //            console.log("flick x"+visibleArea.xPosition+"image x"+imageScreen.x)
             keyboardText.x=contentX
@@ -146,9 +131,9 @@ Page {
 
         Column {
             id: column
-            width: page.width
+            width: root.width
 
-            spacing: Theme.paddingLarge
+//            spacing: Theme.paddingLarge
 
             PageHeader {
                 id:screenHeader
@@ -163,13 +148,13 @@ Page {
                 id:screenPinch
                 width: Math.max(flickableScreen.contentWidth, flickableScreen.width)
                 height: Math.max(flickableScreen.contentHeight, flickableScreen.height)
-
+                enabled: !mouseActive
                 Image {
                     id:imageScreen
-
+                    fillMode: Image.PreserveAspectFit
                     width: flickableScreen.contentWidth
                     height: flickableScreen.contentHeight
-
+                    verticalAlignment: Image.AlignTop
 //                    source: "qrc:/VncScreen/icons/schermata.png"
 
                 }
@@ -181,19 +166,32 @@ Page {
                     anchors.fill: imageScreen
                     onPositionChanged: {
                         console.log("movement")
-                        console.log("mouse.x"+mouse.x+"mouse.y"+mouse.y+"currentScale"+screenPinch.currentScale)
-
-                        screenInterface.vncMouseEvent(mouse.x/screenPinch.currentScale,mouse.y/screenPinch.currentScale,mouse.buttons)
+                        console.log("mouse.x "+mouse.x+" mouse.y "+mouse.y+" currentScale "+screenPinch.currentScale+" mouse.buttons "+mouse.buttons)
+                        if(mouseActive){
+                            screenInterface.vncMouseEvent(mouse.x/screenPinch.currentScale,mouse.y/screenPinch.currentScale,mouse.buttons)
+                        }
                     }
                     onPressed:  {
-                        console.log("pressed")
-                        console.log("mouse.x"+mouse.x+"mouse.y"+mouse.y+"currentScale"+screenPinch.currentScale)
-                        screenInterface.vncMouseEvent(mouse.x/screenPinch.currentScale,mouse.y/screenPinch.currentScale,mouse.buttons)
+                        console.log("pressed on screen"+flickableScreen.contentWidth+"x"+flickableScreen.contentHeight)
+                        console.log("mouse.x "+mouse.x+" mouse.y "+mouse.y+" currentScale "+screenPinch.currentScale+" mouse.buttons "+mouse.buttons)
+                        if(mouseActive){
+                            screenInterface.vncMouseEvent(mouse.x/screenPinch.currentScale,mouse.y/screenPinch.currentScale,mouse.buttons)
+                        }
                     }
                     onReleased: {
                         console.log("released")
-                        console.log("mouse.x"+mouse.x+"mouse.y"+mouse.y+"currentScale"+screenPinch.currentScale)
-                        screenInterface.vncMouseEvent(mouse.x/screenPinch.currentScale,mouse.y/screenPinch.currentScale,mouse.buttons)
+                        console.log("mouse.x "+mouse.x+" mouse.y "+mouse.y+" currentScale "+screenPinch.currentScale+" mouse.buttons "+mouse.buttons)
+                        if(mouseActive){
+                            screenInterface.vncMouseEvent(mouse.x/screenPinch.currentScale,mouse.y/screenPinch.currentScale,mouse.buttons)
+                        }
+                    }
+                    onPressAndHold:  {
+                        console.log("pressandhold")
+                        console.log("mouse.x "+mouse.x+" mouse.y "+mouse.y+" currentScale "+screenPinch.currentScale+" mouse.buttons "+mouse.buttons)
+                        if(mouseActive){
+                            //Il tasto destro corrisponde a Qt.MiddleButton
+                            screenInterface.vncMouseEvent(mouse.x/screenPinch.currentScale,mouse.y/screenPinch.currentScale,Qt.MiddleButton)
+                        }
                     }
 
                 }
@@ -224,7 +222,7 @@ Page {
                 TextField{
                     id:keyboardText
                     visible: false
-
+                    height: 0
                     property int indexKey: 0
                     property int textSize:  0
                     property  int keyCode: 0
@@ -232,7 +230,10 @@ Page {
     //Evita anche che vengano utilizzati degli anticipatori di testo che in tal caso sono fuorvianti perchè i caratteri
     //vanno passati al vnc
                     echoMode: TextInput.NoEcho
-
+                    onFocusChanged: {
+                        focus ? dockTools.hide() : dockTools.show()
+                        focus ? keyboardButton.highlighted=true : keyboardButton.highlighted=false
+                    }
 
                     Keys.onPressed: {
                         console.log(event.text)
@@ -250,6 +251,15 @@ Page {
 
     //                    text="A"
                     }
+                    Keys.onReturnPressed: {
+                        //Quando si preme enter il campo non perde focus ma comunque scompare la tastiera quindi il dock rimane nascosto
+                        //si deve pertanto forzare la ricomparsa del dockTools
+                        console.log("Returnc pressed")
+                        dockTools.show()
+                        keyboardButton.highlighted=false
+//                        keyboardText.activeFocus=false
+                    }
+
                     onTextChanged: {
 
                         keyCode=text.charCodeAt(text.length-1)
@@ -263,11 +273,45 @@ Page {
                         }
                         textSize=text.length
                     }
+
                 }
             }
         }
     }
+    DockedPanel{
+        id: dockTools
+        width: parent.width
+        height: 100
+        open: true
+        dock: Dock.Bottom
+        Row{
+            id: dockRow
+            IconButton {
+                id: keyboardButton
+                icon.source: "image://theme/icon-m-keyboard"
+
+                onClicked: {
+                    console.log("keyboard")
+                    keyboardText.forceActiveFocus()
+                }
+
+            }
+            IconButton {
+                id: mouseButton
+                highlighted: mouseActive
+                //                        anchors.left: keyboardButton.right
+                icon.source: "image://theme/icon-m-mouse"
+                onClicked: {
+                    mouseActive=!mouseActive
+                    console.log("mouse active "+mouseActive)
+                }
+            }
+        }
+
+    }
 }
+
+
 
 
 

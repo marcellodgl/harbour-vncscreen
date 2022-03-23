@@ -36,7 +36,7 @@ class InterfaceRFB : public QObject
     Q_PROPERTY(QString vncpath READ vncpath WRITE setVncpath NOTIFY vncpathChanged)
     Q_PROPERTY(QString vncpassword READ vncpassword WRITE setVncpassword NOTIFY vncpasswordChanged)
     Q_PROPERTY(int vncquality READ vncquality WRITE setVncquality NOTIFY vncqualityChanged)
-
+    Q_PROPERTY(bool running READ running WRITE setRunning NOTIFY runningChanged)
 
 public:
     explicit InterfaceRFB(QObject *parent = 0);
@@ -53,6 +53,9 @@ public:
         Connected=1,
         Disconnected=2
     };
+    bool running();
+    Status connectionStatus();
+
 private:
     QImage rfbImage;
     QString rfbTesto;
@@ -65,6 +68,8 @@ private:
     QList<int> keyEventAccepted;
     int resolutionWidth;
     int resolutionHeight;
+    Status m_connectionStatus;
+    bool m_running;
 
 signals:
 
@@ -76,6 +81,8 @@ signals:
     void vncStatus(int status);
     void vncImageUpdate(long index);
     void resolutionChanged(int width,int height);
+    void runningChanged(bool running);
+
 public slots:
     //Gli slot sono direttamente richiamabili, altrimenti andrebbe usata la macro Q_INVOKABLE
     void vncDisconnect();
@@ -86,6 +93,9 @@ public slots:
     void vncMouseEvent(int x,int y,int button);
     void vncKeyEvent(int key,int modifiers, bool pressed);
     void vncKey(QString key);
+
+
+    void setRunning(bool running);
 
 
 private slots:
