@@ -22,5 +22,11 @@ Some part of code came from KRDC, Copyright (c) 2007-2008 Urs Wolfer
 * Network quality level setting
 * Connection history
 * Zoom screen through Pinch gesture
+*
+* Dock toolbar for mouse and keyboard activation
+* Screen preview on Cover
+* Frame regulation
+* Correction image size on Pinch area
+* Italian, French, Douch translations
 
 

@@ -38,6 +38,16 @@ int main(int argc, char *argv[])
     QGuiApplication* application = SailfishApp::application(argc, argv);
     application->setApplicationVersion(APP_VERSION);
     application->setOrganizationName("Marcello Di Guglielmo");
+//    QString country=QLocale::system().name();
+//    QString appTranslationFile=QString("%1-%2.qm").arg(application->applicationName().toLower()).arg(country);
+//    qDebug()<<"appTranslationFile"<<appTranslationFile;
+//    QTranslator translator;
+//    if(translator.load(appTranslationFile,QString("/usr/share/%1/translations").arg(application->applicationName().toLower())))
+//    {
+//        qDebug()<<"translation load";
+//        application->installTranslator(&translator);
+//    }
+
     QScopedPointer<QGuiApplication> app(application);
     QScopedPointer<QQuickView> v(SailfishApp::createView());
     qmlRegisterType<InterfaceRFB>("harbour.vncscreen.InterfaceRFB", 1, 0, "InterfaceRFB");
@@ -49,6 +59,7 @@ int main(int argc, char *argv[])
     v->setSource(SailfishApp::pathTo("qml/harbour-vncscreen.qml"));
     v->show();
     return app->exec();
+
     //return SailfishApp::main(argc, argv);
 }
 

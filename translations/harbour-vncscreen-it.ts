@@ -5,7 +5,7 @@
     <name>AboutPage</name>
     <message>
         <source>About VNC Screen</source>
-        <translation>À propos de VNC Screen</translation>
+        <translation>Info VNC Screen</translation>
     </message>
     <message>
         <source>VNC Screen</source>
@@ -13,99 +13,99 @@
     </message>
     <message>
         <source>Version</source>
-        <translation>Version</translation>
+        <translation>Versione</translation>
     </message>
     <message>
         <source>This is a remote desktop application for Sailfish OS based on VNC standard.</source>
-        <translation>Application de bureau à distance pour Sailfish OS basée sur le standard VNC.</translation>
+        <translation>Applicazione di desktop remoto per Sailfish OS basato su standard VNC</translation>
     </message>
     <message>
         <source>License</source>
-        <translation></translation>
+        <translation>Licenza</translation>
     </message>
     <message>
         <source>VNC Screen is free software and licensed under GNU Geneal Public License v3</source>
-        <translation>VNC Screen est un logiciel libre sous licence GNU General Public Licence v3</translation>
+        <translation>VNC Screen è software liberso su licenza GNU Geneal Public License v3</translation>
     </message>
     <message>
         <source>Author</source>
-        <translation>Auteur</translation>
+        <translation>Autore</translation>
     </message>
     <message>
         <source>Donate</source>
-        <translation>Don</translation>
+        <translation>Dona</translation>
     </message>
     <message>
         <source>If you like this app and would like to make a donation, via Paypal</source>
-        <translation>Si vous appréciez cette application et voulez faire un don via Paypal</translation>
+        <translation>Se ti piace questa applicazione e vuoi fare una donazione, via Paypal</translation>
     </message>
 </context>
 <context>
     <name>BlockText</name>
     <message>
         <source>Opening Url</source>
-        <translation>Ouverture du l&apos;URL</translation>
+        <translation>Apertura Url</translation>
     </message>
 </context>
 <context>
     <name>ConnectPage</name>
     <message>
         <source>Connect</source>
-        <translation type="unfinished">Connexion</translation>
+        <translation>Connetti</translation>
     </message>
     <message>
         <source>VNC Server URL</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Url</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Quality</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Connection history</source>
-        <translation type="unfinished"></translation>
+        <translation>Qualità</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Rimuovi</translation>
     </message>
     <message>
         <source>Deleting</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancellazione</translation>
     </message>
     <message>
         <source>Clear all</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancella tutto</translation>
+    </message>
+    <message>
+        <source>Connection history</source>
+        <translation>Storico connessioni</translation>
     </message>
 </context>
 <context>
     <name>CoverPage</name>
     <message>
         <source>VNC Screen</source>
-        <translation>VNC Screen</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>MainPage</name>
     <message>
         <source>About</source>
-        <translation>À propos</translation>
+        <translation>Informazioni</translation>
     </message>
     <message>
         <source>Connect</source>
-        <translation>Connexion</translation>
+        <translation>Connetti</translation>
     </message>
     <message>
         <source>Disconnect</source>
-        <translation>Déconnexion</translation>
+        <translation>Disconnetti</translation>
     </message>
     <message>
         <source>VNC Screen</source>
-        <translation>VNC Screen</translation>
+        <translation></translation>
     </message>
 </context>
 </TS>

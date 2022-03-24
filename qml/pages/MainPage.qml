@@ -222,7 +222,7 @@ Page {
                 TextField{
                     id:keyboardText
                     visible: false
-                    height: 0
+//                    height: 0
                     property int indexKey: 0
                     property int textSize:  0
                     property  int keyCode: 0
@@ -231,33 +231,37 @@ Page {
     //vanno passati al vnc
                     echoMode: TextInput.NoEcho
                     onFocusChanged: {
+                        console.log("keyboard text focus changed "+focus)
                         focus ? dockTools.hide() : dockTools.show()
                         focus ? keyboardButton.highlighted=true : keyboardButton.highlighted=false
                     }
 
                     Keys.onPressed: {
-                        console.log(event.text)
+                        console.log("Key pressed text"+event.text+" key "+event.key)
                         screenInterface.vncKeyEvent(event.key,event.modifiers,true)
                     }
                     Keys.onReleased: {
-                        console.log(event.text)
+                        console.log("Key released text"+event.text+" key "+event.key)
     //Condizione di if perchè il backspace genera solo evento di rilased senza pressed
                         if(event.key === Qt.Key_Backspace)
                         {
                             screenInterface.vncKeyEvent(event.key,event.modifiers,true)
+                        }
+                        if(event.key === Qt.Key_Return){
+                            console.log("keyboardText force active focus")
+                            keyboardText.forceActiveFocus()
                         }
 
                         screenInterface.vncKeyEvent(event.key,event.modifiers,false)
 
     //                    text="A"
                     }
-                    Keys.onReturnPressed: {
+                    EnterKey.onClicked: {
                         //Quando si preme enter il campo non perde focus ma comunque scompare la tastiera quindi il dock rimane nascosto
                         //si deve pertanto forzare la ricomparsa del dockTools
                         console.log("Returnc pressed")
-                        dockTools.show()
-                        keyboardButton.highlighted=false
-//                        keyboardText.activeFocus=false
+                        dockTools.focus=true
+//                        keyboardText.forceActiveFocus()
                     }
 
                     onTextChanged: {
