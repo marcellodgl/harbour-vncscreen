@@ -39,10 +39,12 @@ Page {
         onVncStatus: {
             status==InterfaceRFB.Connected ? actionConnect.visible=false : {}
             status==InterfaceRFB.Connected ? actionDisconnect.visible=true : {}
-            status==InterfaceRFB.Connected ? keyboardButton.visible=true : {}
+            status==InterfaceRFB.Connected ? keyboardButton.enabled=true : {}
+            status==InterfaceRFB.Connected ? mouseButton.enabled=true : {}
             status==InterfaceRFB.Disconnected ? actionConnect.visible=true : {}
             status==InterfaceRFB.Disconnected ? actionDisconnect.visible=false : {}
-            status==InterfaceRFB.Disconnected ? keyboardButton.visible=false : {}
+            status==InterfaceRFB.Disconnected ? keyboardButton.enabled=false : {}
+            status==InterfaceRFB.Disconnected ? mouseButton.enabled=false : {}
         }
         onVncImageUpdate: {
 //            console.log("image update"+index)
@@ -293,7 +295,7 @@ Page {
             IconButton {
                 id: keyboardButton
                 icon.source: "image://theme/icon-m-keyboard"
-
+                enabled: false
                 onClicked: {
                     console.log("keyboard")
                     keyboardText.forceActiveFocus()
@@ -305,6 +307,7 @@ Page {
                 highlighted: mouseActive
                 //                        anchors.left: keyboardButton.right
                 icon.source: "image://theme/icon-m-mouse"
+                enabled: false
                 onClicked: {
                     mouseActive=!mouseActive
                     console.log("mouse active "+mouseActive)
