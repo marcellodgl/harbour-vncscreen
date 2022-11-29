@@ -37,8 +37,10 @@ Type: desktop-application
 Categories:
  - Network
 DeveloperName: marcellodgl 
+PackagerName: poetaster
 Custom:
  - Repo: https://github.com/marcellodgl/harbour-vncscreen 
+ - PackagerRepo: https://github.com/poetaster/harbour-vncscreen
 %endif
 
 
