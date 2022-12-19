@@ -17,7 +17,7 @@ Version:    0.3
 Release:    1
 Group:      Qt/Qt
 License:    GPLv3
-URL:        http://example.org/
+URL:        https://github.com/marcellodgl/harbour-vncscreen 
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  harbour-vncscreen.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9
