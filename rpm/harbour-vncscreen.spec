@@ -16,8 +16,8 @@ Summary:    Vnc Screen
 Version:    0.3
 Release:    1
 Group:      Qt/Qt
-License:    LICENSE
-URL:        http://example.org/
+License:    GPLv3
+URL:        https://github.com/marcellodgl/harbour-vncscreen 
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  harbour-vncscreen.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9
@@ -26,9 +26,22 @@ BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  desktop-file-utils
+BuildRequires:  qt5-qttools-linguist
 
 %description
 Remote Desktop application for Sailfish OS based on VNC standard.
+
+%if "%{?vendor}" == "chum"
+PackageName: Vnc Screen
+Type: desktop-application
+Categories:
+ - Network
+DeveloperName: marcellodgl 
+PackagerName: poetaster
+Custom:
+ - Repo: https://github.com/marcellodgl/harbour-vncscreen 
+ - PackagerRepo: https://github.com/poetaster/harbour-vncscreen
+%endif
 
 
 %prep
@@ -67,6 +80,6 @@ desktop-file-install --delete-original       \
 %{_datadir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
-%{_datadir}/%{name}/translations/*
+
 # >> files
 # << files
